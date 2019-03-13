@@ -1,0 +1,162 @@
+////HTML/////
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AddressBook</title>
+	<link rel="stylesheet" href="styles/addressbook.css">
+	<script src="scripts/addressbook.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="title">
+			<h1>Phone Address Book</h1>
+		</div>
+		<div class="quickadd"><button id="QuickAdd">+ Add</button></div>
+		<div class="quickaddForm">
+			<label for="fullname">Name</label><input type="text" id="fullname" class="formFields">
+			<label for="phone">Phone</label><input type="text" id="phone" class="formFields">
+		
+			<br><br>
+			<button id="Add">Add Now</button><button id="Cancel">Cancel</button>
+		</div>
+		<div class="addbook">
+			 <div class="entry">
+				<div class="name"><p>Sachin Bhatnagar</p></div>
+				<div class="email"><p>sachin@frameboxx.in</p></div>
+				<div class="phone"><p>9316523541</p></div>
+				<div class="address"><p>House No. 8, Sector 10 - A</p></div>
+				<div class="city"><p>Chandigarh</p></div>
+				<div class="del"><a href="#">Delete</a></div>
+			</div> 
+			
+		</div>
+	</div>
+</body>
+</html>
+
+
+
+
+//////CSSS/////
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AddressBook</title>
+	<link rel="stylesheet" href="styles/addressbook.css">
+	<script src="scripts/addressbook.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="title">
+			<h1>Address Book</h1>
+		</div>
+		<div class="quickadd"><button id="QuickAdd">+ Add</button></div>
+		<div class="quickaddForm">
+			<label for="fullname">Name</label><input type="text" id="fullname" class="formFields">
+			<label for="phone">Phone</label><input type="text" id="phone" class="formFields">
+			<br><br>
+			<button id="Add">Add Now</button><button id="Cancel">Cancel</button>
+		</div>
+		<div class="addbook">
+			<!-- <div class="entry">
+				<div class="name"><p>Sachin Bhatnagar</p></div>
+				<div class="email"><p>sachin@frameboxx.in</p></div>
+				<div class="phone"><p>9316523541</p></div>
+				<div class="address"><p>House No. 8, Sector 10 - A</p></div>
+				<div class="city"><p>Chandigarh</p></div>
+				<div class="del"><a href="#">Delete</a></div>
+			</div> 
+			
+		</div>
+	</div>
+</body>
+</html>
+
+
+
+////JAVASCRIPT////
+window.onload=function(){
+	//buttons
+	var quickAddBtn=document.getElementById('QuickAdd');
+	var quickAddFormDiv=document.getElementById('.quickaddForm');
+	var cancelBtn=document.getElementById('Cancel');
+	var AddBtn=document.getElementById('Add');
+	//form field
+	var fullname=document.getElementById('fullname');
+	var phone=document.getElementById('phone');
+	var address=document.getElementById('address');
+	var city=document.getElementById('city');
+	var email=document.getElementById('email');
+	//divs
+	var addBookDiv=document.querySelector('.addbook');
+
+	quickAddBtn.addEventListener("click",function(){
+		quickAddFormDiv.style.display="block";
+	});
+
+	cancelBtn.addEventListener("click",function(){
+		quickAddFormDiv.style.display="none";
+	});
+
+	AddBtn.addEventListener("click",addToBook);
+	addBookDiv.addEventListener("click",removeEntry);
+
+	//storage array
+	var addressBool=[];
+
+	function json(fullname,phone){
+		this.fullname=fullname;
+		this.phone=phone;
+	}
+
+	function addToBook(){
+		var isNull=fullname.value!='' && phone.value!='';
+		if(isNull)
+		{
+			var obj=new json(fullname,phone);
+			addressBook.push(obj);
+			localStorage['addbook']=JSON.stringify(addressBook);
+			quickAddFormDiv.style.display="none";
+			clearForm();
+			showAddressBook();
+		}
+	}
+
+	function removeEntry(e)
+	{
+		if(e.target.classList.contains('delbutton')){
+			var remID=e.target.getAttribute('data-id');
+			addressBook.splice(remID,1);
+			localStorage['addbook']=JSON.stringify(addressBook);
+
+		}
+	}	
+
+	function clearForm(){
+		var formFields=document.querySelectorAll('.formFields');
+		for(var i in formFields){
+			formFields[i].value='';
+		}
+	}
+
+	function showAddressBook(){
+		if(localStorage['addbook']===undefined){
+			localStorage['addbook']='';
+		}
+		else
+		{
+			addressBook=JSON.parse(localStorage['addbook']);
+			addBookDiv.innerHTML='';
+			for(var n in addressBook){
+				var str='<div class="entry">';
+				str+='<div class="name"><p>' +addressBook[n].fullname + '</p></div>';
+				str+='<div class="phone"><p>' +addressBook[n].phone + '</p></div>';
+				str+='</div>';
+				addBookDiv.innerHTML+=str;
+			}
+		}
+	}
+	showAddressBook();
+}
